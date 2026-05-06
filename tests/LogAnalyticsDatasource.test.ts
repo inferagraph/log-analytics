@@ -28,11 +28,11 @@ vi.mock('@azure/monitor-query', () => ({
   },
 }));
 
-import { LogAnalyticsDatasource } from '../src/LogAnalyticsDatasource.js';
+import { LogAnalyticsDataSource } from '../src/LogAnalyticsDatasource.js';
 import { SdkQueryExecutor } from '../src/executors/SdkQueryExecutor.js';
 import { ApimQueryExecutor } from '../src/executors/ApimQueryExecutor.js';
 import type {
-  LogAnalyticsDatasourceConfig,
+  LogAnalyticsDataSourceConfig,
   LogAnalyticsQueryConfig,
 } from '../src/types.js';
 
@@ -47,8 +47,8 @@ const baseMapping = {
 } as const;
 
 function makeConfig(
-  overrides: Partial<LogAnalyticsDatasourceConfig> = {},
-): LogAnalyticsDatasourceConfig {
+  overrides: Partial<LogAnalyticsDataSourceConfig> = {},
+): LogAnalyticsDataSourceConfig {
   const { queries: overrideQueries, ...rest } = overrides;
   const queries: LogAnalyticsQueryConfig = {
     nodes: 'Nodes',
@@ -92,9 +92,9 @@ beforeEach(() => {
 // Auth wiring
 // ---------------------------------------------------------------------------
 
-describe('LogAnalyticsDatasource — auth wiring', () => {
+describe('LogAnalyticsDataSource — auth wiring', () => {
   it('app-registration creates SdkQueryExecutor with ClientSecretCredential', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         auth: {
           kind: 'app-registration',
@@ -113,7 +113,7 @@ describe('LogAnalyticsDatasource — auth wiring', () => {
   });
 
   it('managed-identity creates SdkQueryExecutor with ManagedIdentityCredential', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({ auth: { kind: 'managed-identity' } }),
     );
     expect((ds as unknown as { executor: unknown }).executor).toBeInstanceOf(
@@ -124,7 +124,7 @@ describe('LogAnalyticsDatasource — auth wiring', () => {
   });
 
   it('apim creates ApimQueryExecutor', () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         auth: {
           kind: 'apim',
@@ -139,7 +139,7 @@ describe('LogAnalyticsDatasource — auth wiring', () => {
   });
 
   it('isConnected reflects executor state', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     expect(ds.isConnected()).toBe(false);
     await ds.connect();
     expect(ds.isConnected()).toBe(true);
@@ -152,9 +152,9 @@ describe('LogAnalyticsDatasource — auth wiring', () => {
 // DataAdapter operations
 // ---------------------------------------------------------------------------
 
-describe('LogAnalyticsDatasource — operations', () => {
+describe('LogAnalyticsDataSource — operations', () => {
   it('throws if methods are called before connect()', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     await expect(ds.getInitialView()).rejects.toThrow(/not connected/);
     await expect(ds.getNode('x')).rejects.toThrow(/not connected/);
     await expect(ds.getNeighbors('x')).rejects.toThrow(/not connected/);
@@ -163,7 +163,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getInitialView maps rows and limits/filters edges to known nodes', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -197,7 +197,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getInitialView slices nodes to limit', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -213,7 +213,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNode uses queries.node when configured', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: { nodes: 'Nodes', edges: 'Edges', node: 'NodeById' },
       }),
@@ -230,7 +230,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNode falls back to filtering nodes results in memory', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace.mockResolvedValueOnce(
       asTable([
         { id: 'n1', type: 'p', name: 'A' },
@@ -243,7 +243,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNode returns undefined when not found', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace.mockResolvedValueOnce(asTable([]));
     await ds.connect();
     const node = await ds.getNode('missing');
@@ -251,7 +251,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNode with queries.node returns undefined when no rows', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: { nodes: 'Nodes', edges: 'Edges', node: 'NodeById' },
       }),
@@ -262,7 +262,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNeighbors uses queries.neighbors when configured', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -294,7 +294,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNeighbors falls back to in-memory BFS over nodes+edges (no queries.neighbors)', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -319,7 +319,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNeighbors with depth=2 traverses two hops', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -341,7 +341,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getNeighbors with depth=0 returns empty', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(asTable([{ id: 'n1', type: 'p' }]))
       .mockResolvedValueOnce(asTable([]));
@@ -352,7 +352,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('findPath returns the shortest path', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -379,7 +379,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('findPath returns empty when there is no path', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(
         asTable([
@@ -395,7 +395,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('findPath with fromId === toId returns the single node', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     queryWorkspace
       .mockResolvedValueOnce(asTable([{ id: 'a', type: 'p' }]))
       .mockResolvedValueOnce(asTable([]));
@@ -406,13 +406,13 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('search throws when queries.search is not configured', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     await ds.connect();
     await expect(ds.search('foo')).rejects.toThrow(/queries.search/);
   });
 
   it('search uses queries.search and paginates', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -435,7 +435,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('search without pagination returns all items', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -457,7 +457,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('filter throws when queries.filter is not configured', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     await ds.connect();
     await expect(ds.filter({ types: ['person'] })).rejects.toThrow(
       /queries.filter/,
@@ -465,7 +465,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('filter uses queries.filter and paginates', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -494,13 +494,13 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getContent returns undefined when queries.content / mapping.content not configured', async () => {
-    const ds = new LogAnalyticsDatasource(makeConfig());
+    const ds = new LogAnalyticsDataSource(makeConfig());
     await ds.connect();
     expect(await ds.getContent('n1')).toBeUndefined();
   });
 
   it('getContent maps row when content config present', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -528,7 +528,7 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 
   it('getContent returns undefined when content row missing', async () => {
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({
         queries: {
           nodes: 'Nodes',
@@ -547,13 +547,13 @@ describe('LogAnalyticsDatasource — operations', () => {
   });
 });
 
-describe('LogAnalyticsDatasource — KQL resolver', () => {
+describe('LogAnalyticsDataSource — KQL resolver', () => {
   it('function-form queries receive a LogQueryContext', async () => {
     const nodesFn = vi.fn(
       (ctx: { workspaceId: string; params: Record<string, unknown> }) =>
         `Nodes | take ${ctx.params.limit}`,
     );
-    const ds = new LogAnalyticsDatasource(
+    const ds = new LogAnalyticsDataSource(
       makeConfig({ queries: { nodes: nodesFn, edges: 'Edges' } }),
     );
     queryWorkspace

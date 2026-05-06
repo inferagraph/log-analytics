@@ -65,7 +65,7 @@ export interface LogQueryContext {
  * returns a KQL string.
  *
  * `nodes` and `edges` are required; the rest are optional with documented
- * fallbacks (see `LogAnalyticsDatasource`).
+ * fallbacks (see `LogAnalyticsDataSource`).
  */
 export interface LogAnalyticsQueryConfig {
   nodes: string | ((ctx: LogQueryContext) => string);
@@ -97,9 +97,9 @@ export interface LogAnalyticsMapping {
 }
 
 /**
- * Configuration for `LogAnalyticsDatasource`.
+ * Configuration for `LogAnalyticsDataSource`.
  */
-export interface LogAnalyticsDatasourceConfig {
+export interface LogAnalyticsDataSourceConfig {
   /** Azure Log Analytics workspace ID (GUID). */
   workspaceId: string;
   /** Human-readable workspace name (used in error messages and logging). */

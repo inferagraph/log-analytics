@@ -1,6 +1,13 @@
-# @inferagraph/log-analytics-datasource
+# @inferagraph/log-analytics
 
 Azure Log Analytics datasource plugin for [@inferagraph/core](https://github.com/inferagraph/core). Reads graph nodes, edges, and content from a Log Analytics workspace via KQL.
+
+> **Migrating from `@inferagraph/log-analytics-datasource`?**
+> ```bash
+> pnpm remove @inferagraph/log-analytics-datasource
+> pnpm add @inferagraph/log-analytics
+> ```
+> The class was renamed `LogAnalyticsDatasource` → `LogAnalyticsDataSource` (capital `S`). A new `logAnalyticsDataSource(config)` factory is the recommended on-ramp; direct `new LogAnalyticsDataSource(config)` remains as an escape hatch.
 
 Three auth modes are supported:
 
@@ -15,7 +22,7 @@ The first two use [`@azure/monitor-query`](https://www.npmjs.com/package/@azure/
 ## Installation
 
 ```bash
-pnpm add @inferagraph/log-analytics-datasource @inferagraph/core
+pnpm add @inferagraph/log-analytics @inferagraph/core
 ```
 
 `@azure/monitor-query` and `@azure/identity` are bundled as direct dependencies.
@@ -28,12 +35,14 @@ The datasource is configured with three things:
 2. `queries` — KQL strings (or builder functions) per operation
 3. `mapping` — which result columns become `id`, `sourceId`, `targetId`, `type`, etc.
 
+The recommended on-ramp is the `logAnalyticsDataSource(config)` factory; direct `new LogAnalyticsDataSource(config)` is an escape hatch for subclassing or other advanced cases.
+
 ### App registration (server-side)
 
 ```typescript
-import { LogAnalyticsDatasource } from '@inferagraph/log-analytics-datasource';
+import { logAnalyticsDataSource } from '@inferagraph/log-analytics';
 
-const datasource = new LogAnalyticsDatasource({
+const datasource = logAnalyticsDataSource({
   workspaceId: '00000000-0000-0000-0000-000000000000',
   workspaceName: 'graph-prod',
   auth: {
@@ -71,7 +80,7 @@ await datasource.disconnect();
 ### Managed identity (Azure-hosted)
 
 ```typescript
-const datasource = new LogAnalyticsDatasource({
+const datasource = logAnalyticsDataSource({
   workspaceId: process.env.AZURE_LA_WORKSPACE_ID!,
   workspaceName: 'graph-prod',
   auth: { kind: 'managed-identity' },
@@ -85,7 +94,7 @@ const datasource = new LogAnalyticsDatasource({
 ### APIM (HTTP via fetch)
 
 ```typescript
-const datasource = new LogAnalyticsDatasource({
+const datasource = logAnalyticsDataSource({
   workspaceId: process.env.AZURE_LA_WORKSPACE_ID!,
   workspaceName: 'graph-prod',
   auth: {
@@ -110,7 +119,7 @@ The default APIM request is `POST {endpoint}` with body `{ workspaceId, query, o
 
 ## Configuration reference
 
-### `LogAnalyticsDatasourceConfig`
+### `LogAnalyticsDataSourceConfig`
 
 | Field | Type | Description |
 |---|---|---|

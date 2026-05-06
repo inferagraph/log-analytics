@@ -11,7 +11,7 @@ import type {
   DataFilter,
 } from '@inferagraph/core';
 import type {
-  LogAnalyticsDatasourceConfig,
+  LogAnalyticsDataSourceConfig,
   LogAnalyticsQueryConfig,
   LogOperation,
   LogQueryContext,
@@ -31,18 +31,18 @@ import { rowToNode, rowToEdge, rowToContent } from './mapping.js';
  * column names; nothing in here knows about the hosting application's
  * schema.
  */
-export class LogAnalyticsDatasource extends Datasource {
+export class LogAnalyticsDataSource extends Datasource {
   readonly name = 'log-analytics';
-  private readonly config: LogAnalyticsDatasourceConfig;
+  private readonly config: LogAnalyticsDataSourceConfig;
   private readonly executor: QueryExecutor;
 
-  constructor(config: LogAnalyticsDatasourceConfig) {
+  constructor(config: LogAnalyticsDataSourceConfig) {
     super();
     this.config = config;
-    this.executor = LogAnalyticsDatasource.createExecutor(config);
+    this.executor = LogAnalyticsDataSource.createExecutor(config);
   }
 
-  static createExecutor(config: LogAnalyticsDatasourceConfig): QueryExecutor {
+  static createExecutor(config: LogAnalyticsDataSourceConfig): QueryExecutor {
     switch (config.auth.kind) {
       case 'app-registration':
       case 'managed-identity':
@@ -132,7 +132,7 @@ export class LogAnalyticsDatasource extends Datasource {
       rowToEdge(row, this.config.mapping.edges),
     );
 
-    return LogAnalyticsDatasource.bfsNeighbors(allNodes, allEdges, nodeId, depth);
+    return LogAnalyticsDataSource.bfsNeighbors(allNodes, allEdges, nodeId, depth);
   }
 
   async findPath(fromId: NodeId, toId: NodeId): Promise<GraphData> {
@@ -147,7 +147,7 @@ export class LogAnalyticsDatasource extends Datasource {
       rowToEdge(row, this.config.mapping.edges),
     );
 
-    return LogAnalyticsDatasource.bfsPath(allNodes, allEdges, fromId, toId);
+    return LogAnalyticsDataSource.bfsPath(allNodes, allEdges, fromId, toId);
   }
 
   async search(
@@ -157,12 +157,12 @@ export class LogAnalyticsDatasource extends Datasource {
     this.ensureConnected();
     if (!this.config.queries.search) {
       throw new Error(
-        'LogAnalyticsDatasource.search requires queries.search to be configured.',
+        'LogAnalyticsDataSource.search requires queries.search to be configured.',
       );
     }
     const rows = await this.runOp('search', 'search', { query });
     const items = rows.map((row) => rowToNode(row, this.config.mapping.nodes));
-    return LogAnalyticsDatasource.paginate(items, pagination);
+    return LogAnalyticsDataSource.paginate(items, pagination);
   }
 
   async filter(
@@ -172,12 +172,12 @@ export class LogAnalyticsDatasource extends Datasource {
     this.ensureConnected();
     if (!this.config.queries.filter) {
       throw new Error(
-        'LogAnalyticsDatasource.filter requires queries.filter to be configured.',
+        'LogAnalyticsDataSource.filter requires queries.filter to be configured.',
       );
     }
     const rows = await this.runOp('filter', 'filter', { filter });
     const items = rows.map((row) => rowToNode(row, this.config.mapping.nodes));
-    return LogAnalyticsDatasource.paginate(items, pagination);
+    return LogAnalyticsDataSource.paginate(items, pagination);
   }
 
   async getContent(nodeId: NodeId): Promise<ContentData | undefined> {
@@ -195,7 +195,7 @@ export class LogAnalyticsDatasource extends Datasource {
   private ensureConnected(): void {
     if (!this.executor.isConnected()) {
       throw new Error(
-        `LogAnalyticsDatasource (workspace='${this.config.workspaceName}') is not connected. Call connect() first.`,
+        `LogAnalyticsDataSource (workspace='${this.config.workspaceName}') is not connected. Call connect() first.`,
       );
     }
   }
@@ -207,7 +207,7 @@ export class LogAnalyticsDatasource extends Datasource {
     const q = this.config.queries[queryKey];
     if (q === undefined) {
       throw new Error(
-        `LogAnalyticsDatasource: no query configured for '${String(queryKey)}'.`,
+        `LogAnalyticsDataSource: no query configured for '${String(queryKey)}'.`,
       );
     }
     return typeof q === 'function' ? q(ctx) : q;
