@@ -11,7 +11,7 @@ describe('package.json', () => {
     expect(pkg.name).toBe('@inferagraph/log-analytics');
   });
 
-  it('peerDependencies @inferagraph/core is ^0.9.0', () => {
-    expect(pkg.peerDependencies['@inferagraph/core']).toBe('^0.9.0');
+  it('peerDependencies @inferagraph/core is ^0.9.1', () => {
+    expect(pkg.peerDependencies['@inferagraph/core']).toBe('^0.9.1');
   });
 });

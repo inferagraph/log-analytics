@@ -40,7 +40,7 @@ const baseConfig: LogAnalyticsDataSourceConfig = {
 };
 
 describe('logAnalyticsDataSource factory', () => {
-  it('returns a DataSource-shaped instance (extends core Datasource, exposes name + lifecycle)', () => {
+  it('returns a DataSource-shaped instance (extends core DataSource, exposes name + lifecycle)', () => {
     const ds = logAnalyticsDataSource(baseConfig);
     expect(ds).toBeInstanceOf(LogAnalyticsDataSource);
     expect(ds.name).toBe('log-analytics');

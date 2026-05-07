@@ -1,4 +1,4 @@
-import { Datasource } from '@inferagraph/core';
+import { DataSource } from '@inferagraph/core';
 import type {
   DataAdapterConfig,
   GraphData,
@@ -22,7 +22,7 @@ import { ApimQueryExecutor } from './executors/ApimQueryExecutor.js';
 import { rowToNode, rowToEdge, rowToContent } from './mapping.js';
 
 /**
- * Datasource that reads graph data from an Azure Log Analytics workspace
+ * DataSource that reads graph data from an Azure Log Analytics workspace
  * using KQL. Supports three auth modes via the `auth` discriminator:
  * `app-registration`, `managed-identity` (both via `@azure/monitor-query`),
  * and `apim` (HTTP via `fetch`).
@@ -31,7 +31,7 @@ import { rowToNode, rowToEdge, rowToContent } from './mapping.js';
  * column names; nothing in here knows about the hosting application's
  * schema.
  */
-export class LogAnalyticsDataSource extends Datasource {
+export class LogAnalyticsDataSource extends DataSource {
   readonly name = 'log-analytics';
   private readonly config: LogAnalyticsDataSourceConfig;
   private readonly executor: QueryExecutor;
