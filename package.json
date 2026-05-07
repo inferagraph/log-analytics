@@ -3,7 +3,7 @@
   "version": "0.2.1",
   "type": "module",
   "description": "Azure Log Analytics datasource for InferaGraph (KQL via @azure/monitor-query or APIM)",
-  "repository": { "type": "git", "url": "git+https://github.com/inferagraph/log-analytics-datasource.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/inferagraph/log-analytics.git" },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
