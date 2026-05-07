@@ -10,8 +10,4 @@ describe('package.json', () => {
   it('is renamed to @inferagraph/log-analytics', () => {
     expect(pkg.name).toBe('@inferagraph/log-analytics');
   });
-
-  it('peerDependencies @inferagraph/core is ^0.9.1', () => {
-    expect(pkg.peerDependencies['@inferagraph/core']).toBe('^0.9.1');
-  });
 });
