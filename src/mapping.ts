@@ -1,4 +1,4 @@
-import type { NodeData, EdgeData, ContentData } from '@inferagraph/core';
+import type { NodeData, EdgeData, ContentData } from '@inferagraph/core/data';
 import type { LogAnalyticsMapping } from './types.js';
 
 /**

@@ -1,4 +1,4 @@
-import { DataSource } from '@inferagraph/core';
+import { DataSource } from '@inferagraph/core/data';
 import type {
   DataAdapterConfig,
   GraphData,
@@ -9,7 +9,7 @@ import type {
   PaginationOptions,
   PaginatedResult,
   DataFilter,
-} from '@inferagraph/core';
+} from '@inferagraph/core/data';
 import type {
   LogAnalyticsDataSourceConfig,
   LogAnalyticsQueryConfig,
