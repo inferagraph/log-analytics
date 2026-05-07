@@ -28,7 +28,7 @@ vi.mock('@azure/monitor-query', () => ({
   },
 }));
 
-import { LogAnalyticsDataSource } from '../src/LogAnalyticsDatasource.js';
+import { LogAnalyticsDataSource } from '../src/LogAnalyticsDataSource.js';
 import { SdkQueryExecutor } from '../src/executors/SdkQueryExecutor.js';
 import { ApimQueryExecutor } from '../src/executors/ApimQueryExecutor.js';
 import type {
