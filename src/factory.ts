@@ -1,4 +1,4 @@
-import { LogAnalyticsDataSource } from './LogAnalyticsDatasource.js';
+import { LogAnalyticsDataSource } from './LogAnalyticsDataSource.js';
 import type { LogAnalyticsDataSourceConfig } from './types.js';
 
 /**

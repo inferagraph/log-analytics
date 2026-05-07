@@ -1,4 +1,4 @@
-export { LogAnalyticsDataSource } from './LogAnalyticsDatasource.js';
+export { LogAnalyticsDataSource } from './LogAnalyticsDataSource.js';
 export { logAnalyticsDataSource } from './factory.js';
 export { SdkQueryExecutor } from './executors/SdkQueryExecutor.js';
 export { ApimQueryExecutor } from './executors/ApimQueryExecutor.js';
